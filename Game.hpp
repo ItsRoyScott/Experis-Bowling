@@ -9,6 +9,7 @@ namespace ExperisBowling {
     // Tracks score for a simple game of bowling.
     class Game {
     public:
+        // constants to avoid hard-coded numbers, make code more self-documenting
         static constexpr unsigned FinalFrame = 10u;
         static constexpr unsigned FirstBonusFrame = FinalFrame + 1u;
         static constexpr unsigned SecondBonusFrame = FinalFrame + 2u;
@@ -18,14 +19,15 @@ namespace ExperisBowling {
         static constexpr int SpareBonusRolls = 1;
         static constexpr int StrikeBonusRolls = 2;
 
+        // data to represent a single frame in a bowling game
         struct Frame {
-            int                     bonusRolls          = 0;
-            unsigned                currentScore        = 0u;
-            bool                    isStrike            = false;
-            bool                    isSpare             = false;
-            std::optional<unsigned> pinsOnFirstRoll;
-            std::optional<unsigned> pinsOnSecondRoll;
-            unsigned                totalScore          = 0u;
+            int                     bonusRolls          = 0;        // count of how many bonus rolls we have
+            unsigned                currentScore        = 0u;       // the score for the current round (not the total sum)
+            bool                    isSpare             = false;    // flagging whether a spare occurred
+            bool                    isStrike            = false;    // flagging whether a strike occurred
+            std::optional<unsigned> pinsOnFirstRoll;                // how many pins we got in the first roll, if we played it
+            std::optional<unsigned> pinsOnSecondRoll;               // how many pins we got in the second roll, if we played it
+            unsigned                totalScore          = 0u;       // the accumulative score up to this point
         };
 
     private:
@@ -54,7 +56,8 @@ namespace ExperisBowling {
 
         // retrieves the current total score
         constexpr unsigned GetScore() const {
-            for (Frame const& frame : frames | std::views::reverse) { // seek backwards through the frames for the score
+            // seek backwards through the frames for the score
+            for (Frame const& frame : frames | std::views::reverse) {
                 if (frame.totalScore > 0u) {
                     return frame.totalScore;
                 }
@@ -88,7 +91,7 @@ namespace ExperisBowling {
                 return std::format("Invalid roll - Pin count: {}", pinCount);
             }
 
-            // add in points for the final frame
+            // add in points until the final frame
             if (currentRound <= FinalFrame - 1u) {
                 frames[currentRound].currentScore += pinCount;
             }
