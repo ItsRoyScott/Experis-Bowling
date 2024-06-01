@@ -79,6 +79,7 @@ namespace ExperisBowling {
         }
 
         // tells the bowling game how many pins were knocked down by the latest roll
+        //-- using std::optional as a stand-in for C++23 error-handling with std::expected
         constexpr std::optional<std::string> Roll(unsigned pinCount) {
             if (IsGameComplete()) {
                 return "Game complete.";
